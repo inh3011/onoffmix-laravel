@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Meet;
+use App\Models\Manage;
 
 class User extends Authenticatable
 {
@@ -27,7 +28,11 @@ class User extends Authenticatable
 
     public function meets()
     {
-        return $this->hasMany(\App\Models\Meet::class);
+        return $this->hasMany(Meet::class);
+    }
+
+    public function manage() {
+        return $this->belongTo(\App\Models\Manage::class);
     }
 
     /**

@@ -3,31 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+
 use App\Models\Meet;
 use App\Models\User;
 
 class MeetController extends Controller
 {
-    // public function index() {
-    //     return Meet::all();
-    // }
-
     public function show() {
-        $meets = Meet::orderBy('created_at', 'desc')->get();
+        $meets = Meet::orderBy('created_at', 'desc')->with('forms')->get();
 
         return response() -> json($meets);
     }
 
-    public function create(Request $request, $userId) {
-
-        $user = User::find($userId);
-        if(!$user)
-            return response()->json(['message' => false], 404);
+    public function create(Request $request) {
 
         $request->validate([
             'title' => 'required|unique:meets',
             'content' => 'required',
-            'view' => 'required'
+            'view' => 'required',
         ]);
 
         # create meet
@@ -35,9 +28,9 @@ class MeetController extends Controller
             'title' => $request['title'],
             'content' => $request['content'],
             'view' => $request['view'],
-            'user_id' => $userId, # master
+            'user_id' => $request->user()['id'], # master
         ]);
-
+        
         return response()->json(['meet' => $meet]);
     }
 
